@@ -1,0 +1,15 @@
+XTerm*selectToClipboard : true
+XTerm*faceName: 'Ricty Discord'
+XTerm*faceSize: 10
+XTerm*cjkWidth: false
+XTerm*background: black
+XTerm*foreground: white
+XTerm*scrollBar: false
+XTerm*saveLines: 10000
+XTerm*utf8: 1
+XTerm*utf8Title: true
+XTerm*metaSendsEscape: true
+XTerm*wideChars: false
+XTerm*xtermName: xterm-256color
+XTerm*locale: true
+XTerm*fontDoublesize: true

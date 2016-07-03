@@ -1,0 +1,7 @@
+keycode  37 = Control_L
+    remove lock = Eisu_toggle
+keycode  66 = Control_L
+    add control = Control_L
+keycode 102 = Super_L
+keycode 133 = Muhenkan
+keycode 100 = Menu

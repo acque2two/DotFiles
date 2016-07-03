@@ -1,0 +1,57 @@
+scriptencoding utf-8
+
+highlight LineNr ctermfg=darkyellow
+
+colorscheme desert256
+nnoremap <Space>w  :<C-u>w<CR>
+nnoremap <Space>q  :<C-u>q<CR>
+nnoremap <Space>Q  :<C-u>q!<CR>
+nnoremap Y y$
+cnoremap <expr> / getcmdtype() == '/' ? '\/' : '/'
+cnoremap <expr> ? getcmdtype() == '?' ? '\?' : '?'))
+
+filetype plugin indent off
+if has('vim_starting')
+	set runtimepath+=~/.vim/bundle/neobundle.vim
+endif
+
+augroup SkeletonAu
+	autocmd!
+	autocmd BufNewFile *.py 0r $HOME/.vim/skel.py
+    autocmd BufNewFile *.c 0r $HOME/.vim/skel.c
+    autocmd BufNewFile *.cpp 0r $HOME/.vim/skel.cpp
+augroup END
+
+set background=dark
+
+filetype plugin indent on
+
+if has("autocmd")
+    autocmd BufReadPost *
+		\ if line("'\"") > 0 && line ("'\"") <= line("$") |
+		\   exe "normal! g'\"" |
+		\ endif
+endif
+syntax on
+au BufRead,BufNewFile *.md set filetype=markdown
+
+augroup MyXML
+    autocmd!
+    autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o>
+    autocmd Filetype html inoremap <buffer> </ </<C-x><C-o>
+augroup END
+
+imap { {}<LEFT>
+imap [ []<LEFT>
+imap ( ()<LEFT>
+
+inoremap <C-l> <Esc>$i
+inoremap <C-h> <Esc>^i
+inoremap <C-j> <Esc>ggi
+inoremap <C-k> <Esc>Gi
+noremap <C-l> <Esc>$
+noremap <C-h> <Esc>^
+noremap <C-j> <Esc>gg
+noremap <C-k> <Esc>G
+
+

@@ -1,0 +1,111 @@
+archey3
+
+export PATH=$PATH:$HOME/.bin
+## Zsh 色関係
+
+#if [ -f ~/.zsh/auto-fu.zsh/auto-fu.zsh ]; then
+#    source ~/.zsh/auto-fu.zsh/auto-fu.zsh
+#        function zle-line-init () {
+#            auto-fu-init
+#        }
+#        zle -N zle-line-init
+#        zstyle ':completion:*' completer _oldlist _complete _match _ignored
+#        zstyle ':completion:*' completer _complete
+#fi
+
+## Zsh プラグイン系
+
+
+
+
+
+
+
+#bindkey "^[[3~" delete-char
+
+
+
+
+
+
+## Home/Enda
+## コマンド履歴
+
+if [ -d ~/.zsh/cache ]; then
+    zstyle ':completion:*' use-cache yes
+    zstyle ':completion:*' cache-path ~/.zsh/cache
+fi
+
+#autoload -Uz history-search-end
+#zle -N history-beginning-search-backward-end history-search-end
+#zle -N history-beginning-search-forward-end history-search-end
+#bindkey "^P" history-beginning-search-backward-end
+#bindkey "^N" history-beginning-search-forward-end
+
+
+## プロンプト
+## Root時にわかりやすいように赤字に、それ以外は緑字に。
+## つまりrootは色を違う色に指定する
+if [ $isSchool > 0 ]; then
+    if [ $isSchool = 29 ]; then
+        PROMPT="%F{red}[SCHOOL]%n %#%f"
+        RPROMPT="%F{red}%~%f"
+        PROMPT2="%F{cyan}:) %f"
+        RPROMPT2="%F{cyan}%~%f"
+        PROMPT3="%F{red}[Selece]%n %~ %#%f"
+    else
+        PROMPT="%F{yellow}[SCHOOL]%n %#%f"
+        RPROMPT="%F{yellow}%~%f"
+        PROMPT2="%F{cyan}:) %f"
+        RPROMPT2="%F{cyan}%~%f"
+        PROMPT3="%F{yellow}[Selece]%n %~ %#%f"
+    fi
+else
+    PROMPT="%F{green}%n %#%f"
+    RPROMPT="%F{green}%~%f"
+    PROMPT2="%F{cyan}:) %f"
+    RPROMPT2="%F{cyan}%~%f"
+    PROMPT3="%F{green}%n@Boron %~ %#%f"
+fi
+
+[ -n "${REMOTEHOST}${SSH_CONNECTION}" ] &&
+      PROMPT="[SSH] ${PROMPT}"
+;
+PS1=${PROMPT}
+
+## 補完の詳細設定
+# 大文字小文字の無視
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# ../ の後は今いるディレクトリを補完しない
+zstyle ':completion:*' ignore-parents parent pwd ..
+
+# sudoでもコマンド名を補完
+zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
+# ps コマンドのプロセス名補完
+zstyle ':completion:*:processes' command 'ps x -o pid,s,args'
+#zstyle 
+#bindkey "^[[Z" reverse-menu-complete "]]"
+
+#####################################
+# オプション
+# 日本語ファイル名を表示可能にする
+
+
+# 単語の区切り文字を指定する
+
+select-word-style default
+# ここで指定した文字は単語区切りとみなされる
+# / も区切りと扱うので、^W でディレクトリ１つ分を削除できる
+zstyle ':zle:*' word-chars " /=;@:{},|"
+zstyle ':zle:*' word-style unspecified
+
+
+
+# source /usr/share/doc/pkgfile/command-not-found.zsh
+
+# GRML用
+zstyle ':prompt:grml:left:setup' items change-root user percent
+zstyle ':prompt:grml:left:items:user' pre '%F{green}'
+zstyle ':prompt:grml:right:setup' items path rc
+
