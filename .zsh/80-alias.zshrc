@@ -2,7 +2,7 @@
 alias ls="ls -F --color=auto -v"
 alias la="ls -a"
 alias ll="ls -l"
-alias cp="cp --reflink=auto"
+alias cp="cp --reflink=always"
 alias grep="grep --color"
 alias clear="clear && archey3"
 alias fbterm="fbterm --font-names=\"Ricty Discord\" --font-size=20"
