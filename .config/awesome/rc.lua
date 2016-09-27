@@ -651,6 +651,6 @@ end
 awful.util.spawn("export GTK_IM_MODULE=fcitx")
 awful.util.spawn("export QT_IM_MODULE=fcitx")
 awful.util.spawn('export XMODIFIERS="@im=fcitx"')
-awful.util.spawn('xmodmap ~/.xmodmap')
+awful.util.spawn_with_shell('sleep 2; xmodmap ~/.xmodmap')
 
 awful.util.spawn('~/.bin/ramwarn')
