@@ -616,10 +616,10 @@ end
 
 -- {{ I need redshift to save my eyes }} -
 run_once("redshift -l 0:0 -b 1.0 -l 35.6:139.3 -t 6500:5500")
-awful.util.spawn_with_shell("xmodmap ~/.speedswapper")
+-- awful.util.spawn("xmodmap ~/.speedswapper")
 
 -- {{ Turns off the terminal bell }} --
-awful.util.spawn_with_shell("/usr/bin/xset b off")
+awful.util.spawn("/usr/bin/xset b off")
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
@@ -648,8 +648,9 @@ do
     run_once(i)
   end
 end
-awful.util.spawn_with_shell("export GTK_IM_MODULE=fcitx")
-awful.util.spawn_with_shell("export QT_IM_MODULE=fcitx")
-awful.util.spawn_with_shell('export XMODIFIERS="@im=fcitx"')
+awful.util.spawn("export GTK_IM_MODULE=fcitx")
+awful.util.spawn("export QT_IM_MODULE=fcitx")
+awful.util.spawn('export XMODIFIERS="@im=fcitx"')
+awful.util.spawn('xmodmap ~/.xmodmap')
 
-awful.util.spawn_with_shell('~/.bin/ramwarn')
+awful.util.spawn('~/.bin/ramwarn')
