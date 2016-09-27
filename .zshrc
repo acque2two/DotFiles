@@ -1,39 +1,44 @@
 if [ -z "$TMUX" ]; then
     echo TMUX not detected.
     if tmux has-session >/dev/null 2>&1 && tmux list-sessions | grep -qE '.*]$'; then
-        # detached session exists
         tmux list-sessions
-        echo -n "Tmux: attach? (y/N/num) "
+        echo -n "attach (Y/n/num) "
         read
-        if [[ "$REPLY" =~ ^[Yy]$ ]] ; then
+        if [[ "$REPLY" == '' ]] || [[ "$REPLY" =~ ^[Yy]$ ]] ; then
             tmux attach-session
-            exit
-        elif [[ "$REPLY" == '' ]] || [[ "$REPLY" =~ ^[Nn]$ ]]; then
+        elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
             tmux new-session
-            exit
-
         elif [[ "$REPLY" =~ ^[0-9]+$ ]]; then
             tmux attach -t "$REPLY"
-            exit
         fi
+        exit
     fi
-    echo TMUX Running...
-    mkdir -p ~/.termlog/`date +%y%m%d`
+    echo TMUX New session Starting...
     tmux new-session \; pipe-pane 'cat > ~/.termlog/`date +%y%m%d/%H%M%S.log`'
     exit
 fi
 
-function lconf() {
-    CONFF=${1:?"[ERROR] Augument error."}
-    if [ -f $CONFF ];then
-        . $CONFF
-    else
-        echo "[ERROR] ${CONFF} is not found."
-    fi
-}
-CONF="${HOME}/.zsh"
+if [ -z "$SCRIPTED" ]; then
+    LOGGING="/home/acq/.termlog/`date +%y%m%d/ZSH_%H%M%S_%N.log`'"
+    echo Not scripted. script starting...
+    mkdir -p ~/.termlog/`date +%y%m%d`
+    mkdir -p ~/.termlog/`date +%y%m%d`
+    export SCRIPTED=TRUE
+    script $LOGGING --timing=$LOGGING.timing
+    exit
+    #echo \[WARNING\] SCRIPT DISABLED\!
+fi
 
-for i in `ls ${CONF}/*.zshrc`
+#function lconf() {
+#    CONFF=${1:?"[ERROR] Augument error."}
+#    if [ -f $CONFF ];then
+#            else
+#        echo "[ERROR] ${CONFF} is not found."
+#    fi
+#}
+#CONF="${HOME}/.zsh"
+
+for i in `ls ${HOME}/.zsh/*.zshrc`
 do
-    lconf ${i}
+    . $i
 done

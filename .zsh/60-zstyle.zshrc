@@ -8,7 +8,7 @@ zstyle ':zle:*' word-chars " /=;@:{},|"
 zstyle ':zle:*' word-style unspecified
 zstyle ':prompt:grml:left:setup' items change-root user percent
 zstyle ':prompt:grml:left:items:user' pre '%F{green}'
-zstyle ':prompt:grml:right:setup' items path rc
+zstyle ':prompt:grml:right:setup' items vcs path rc sad-smiley battery jobs
 zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?~' '*\#'
 
 zstyle ':completion:*' use-cache yes

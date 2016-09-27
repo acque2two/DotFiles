@@ -58,4 +58,6 @@ setopt short_loops
 
 setopt no_flow_control
 
-
+# 前にヒストリをgitにあげて「お前の動画閲覧履歴が上がってるぞ」とIssueで言われたので
+# スペースを入れてコマンドを実行するとヒストリに残らなくなる
+setopt HIST_IGNORE_SPACE

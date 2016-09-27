@@ -2,14 +2,14 @@
 alias ls="ls -F --color=auto -v"
 alias la="ls -a"
 alias ll="ls -l"
-alias cp="cp --reflink=always"
+alias cp="cp --reflink=auto"
 alias grep="grep --color"
 alias clear="clear && archey3"
 alias fbterm="fbterm --font-names=\"Ricty Discord\" --font-size=20"
 alias pstree="pstree -A"
 alias ping="ping -w 1 -c 1"
 alias ps="ps ax"
-alias -G inn="\| grep"
+alias inn="\| grep"
 # 間違い減らし用（promptとかinterractiveとか）
 alias rm="rm -i"
 alias mv="mv -i"
@@ -49,7 +49,7 @@ alias ipconfig="ip addr"
 
 # sudo の後のコマンドでエイリアスを有効にする
 alias sudo="sudo "
-
+alias sl='ls'
 # 学校プロキシはクソ、はっきりわかんだね
 ## 透過プロキシくらいにはしてほしいなぁ
 alias school="source ~/.bin/school"
