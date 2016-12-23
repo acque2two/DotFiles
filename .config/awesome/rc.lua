@@ -1,27 +1,24 @@
--- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
 awful.rules = require("awful.rules")
 require("awful.autofocus")
--- Widget and layout library
 local wibox = require("wibox")
--- Theme handling library
 local beautiful = require("beautiful")
--- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
 local vicious = require("vicious")
 require('naughty')
-awful.util.spawn_with_shell('xmodmap ~/.xmodmap')
-xdg_menu = require("archmenu")
--- {{{ Error handling
--- Check if awesome encountered an error during startup and fell back to
--- another config (This code will only ever execute for the fallback config)
+
+-- Error handling
 if awesome.startup_errors then
-    naughty.notify({ preset = naughty.config.presets.critical,
-                     title = "Oops, there were errors during startup!",
-                     text = awesome.startup_errors })
+    naughty.notify(
+		{ preset = naughty.config.presets.critical,
+                     title = "なにかがおかしいよ",
+                     text = awesome.startup_errors 
+		}
+	)
 end
+
 menubar.cache_entries = true
 menubar.show_categories = true
 menubar.g = {
@@ -43,44 +40,23 @@ do
         in_error = false
     end)
 end
--- }}}
-
--- {{{ Variable definitions
--- Themes define colours, icons, and wallpapers
-
-
 
 -- Setup directories
 config_dir = (os.getenv("HOME").."/.config/awesome/")
-themes_dir = (config_dir .. "/themes/")
+themes_dir = (config_dir .. "themes/")
+icons_dir = (themes_dir .. "icons/")
 
 beautiful.init(themes_dir .. "theme.lua")
 
 -- This is used later as the default terminal, browser and editor to run.
 terminal = "st"
 editor = os.getenv("EDITOR") or "vim"
-editor_cmd = terminal .. " -e " .. editor
 browser = "google-chrome-unstable"
-
-
--- {{ Powerarrow-dark separators }} --
-arrl = wibox.widget.imagebox()
-arrl:set_image(beautiful.arrl)
-arrl_ld = wibox.widget.imagebox()
-arrl_ld:set_image(beautiful.arrl_ld)
-arrl_dl = wibox.widget.imagebox()
-arrl_dl:set_image(beautiful.arrl_dl)
-
--- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
+filer = "caja"
+mailer = "thunderbird"
 modkey = "Mod4"
 
--- Table of layouts to cover with awful.layout.inc, order matters.
--- awful.layout.suit.floating,
---    awful.layout.suit.tile.top,
+-- Layouts
 local layouts =
 {
     awful.layout.suit.tile,
@@ -91,66 +67,40 @@ local layouts =
     awful.layout.suit.max,
 	awful.layout.suit.floating,
 }
--- }}}
 
--- {{{ Wallpaper
+-- Wallpapers in all workspaces
 if beautiful.wallpaper then
     for s = 1, screen.count() do
         gears.wallpaper.maximized(beautiful.wallpaper, s, true)
     end
 end
--- }}}
 
--- {{{ Tags
--- Define a tag table which hold all screen tags.
+-- Maximum tag-id is 5.
 tags = {}
 for s = 1, screen.count() do
-    -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5}, s, layouts[1])
+    tags[s] = awful.tag({ 1, 2, 3, 4, 5 }, s, layouts[1])
 end
--- }}}
-
--- {{{ Menu
--- Create a laucher widget and a main menu
--- myawesomemenu = {
---   { "manual", terminal .. " -e man awesome" },
---   { "edit config", editor_cmd .. " " .. awesome.conffile },
---   { "restart", awesome.restart },
---   { "quit", awesome.quit }
--- }
-
---mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
---                                     { "Applications", xdgmenu },
---                                    { "open terminal", terminal }
---                                  }
---                       })
-
--- mylauncher = awful.widget.launcher({ menu = mymainmenu })
 
 -- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
--- }}}
+menubar.utils.terminal = terminal
 
--- {{{ Wibox
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
 
---{{-- Time and Date Widget }} --
+-- Widgets
+-- Time and Date
 tdwidget = wibox.widget.textbox()
 vicious.register(tdwidget, vicious.widgets.date, '<span color="#F0F0F0"> %R </span>', 30)
 
-clockicon = wibox.widget.imagebox()
-clockicon:set_image(beautiful.clock)
-
---{{ Battery Widget }} --
+-- Battery
 baticon = wibox.widget.imagebox()
 vicious.register(baticon, vicious.widgets.bat, function(widget, args)
     if args[1] == "+" then
-        baticon:set_image("/home/acq/.config/awesome/themes/acq/power_charge.png")
+        baticon:set_image("power_charge.png")
     elseif args[1] == "−" then
-        baticon:set_image("/home/acq/.config/awesome/themes/acq/power_discharge.png")
+        baticon:set_image(icons_dir .. "power_discharge.png")
     else
-        baticon:set_image("/home/acq/.config/awesome/themes/acq/power_nobatt.png")
+        baticon:set_image(icons_dir .. "power_nobatt.png")
     end
 end,
     5,"BAT0")
@@ -158,7 +108,7 @@ end,
 batwidget = wibox.widget.textbox()
 vicious.register(batwidget, vicious.widgets.bat, '<span color="#EEEEEE">$2% </span>', 10, "BAT0")
 
---{{ Net Widget }} --
+-- Net Speed
 
 netwidget = wibox.widget.textbox()
 neticon = wibox.widget.imagebox()
@@ -176,37 +126,23 @@ vicious.register(netwidget, vicious.widgets.net, function(widgets,args)
         else
                 return ""
         end
-        return '<span color="#EEEEEE">' ..args["{"..interface.." down_kb}"]..'k'..'</span>' end, 2
+        return '' ..args["{"..interface.." down_kb}"]..'k'..'' end, 2
 )
 
 vicious.register(neticon, vicious.widgets.net, function(widget, args)
         if args["{bnep0 carrier}"] == 1 then
-            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_bt.png")
+            neticon:set_image(icons_dir .. "net_bt.png")
         elseif args["{enp0s25 carrier}"] == 1 then
-            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_ethernet.png")
+            neticon:set_image(icons_dir .. "net_ethernet.png")
         elseif args["{wlp3s0 carrier}"] == 1 then
-            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_wlan.png")
+            neticon:set_image(icons_dir .. "net_wlan.png")
         elseif args["{br carrier}"] == 1 then
-            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_vpn.png")
+            neticon:set_image(icons_dir .. "net_vpn.png")
         end
 end)
 
---netwidget:buttons(awful.util.table.join(awful.button({ }, 1, function() awful.util.spawn_with_shell('wicd-client -n') end)))
 
-
----{{---| Wifi Signal Widget |-------
--- vicious.register(neticon, vicious.widgets.wifi, function(widget, args)
---    local sigstrength = tonumber(args["{link}"])
---    if sigstrength > 69 then
---        neticon:set_image(beautiful.nethigh)
---    elseif sigstrength > 40 and sigstrength < 70 then
---        neticon:set_image(beautiful.netmedium)
---    else
---        neticon:set_image(beautiful.netlow)
---    end
---end, 120, 'wlp3s0')
-
--- {{ Volume Widget }} --
+-- Volume Widget
 
 volume = wibox.widget.textbox()
 vicious.register(volume, vicious.widgets.volume, '<span color="#EEEEEE">$1% </span>', 1, "Master")
@@ -214,32 +150,32 @@ vicious.register(volume, vicious.widgets.volume, '<span color="#EEEEEE">$1% </sp
 volicon = wibox.widget.imagebox()
 vicious.register(volicon, vicious.widgets.volume, function(widget, args)
         local paraone = tonumber(args[1])
-            volicon:set_image("/home/acq/.config/awesome/themes/acq/sound.png")
+            volicon:set_image(icons_dir .. "sound.png")
         if args[2] == "♩" or paraone == 0 then
-            volicon:set_image("/home/acq/.config/awesome/themes/acq/sound_mute.png")
-        else
+            volicon:set_image(icons_dir .. "sound_mute.png")
         end
-
 end, 5, "Master")
 
---{{--| MEM widget |-----------------
+-- Memory
 memwidget = wibox.widget.textbox()
 
 vicious.register(memwidget, vicious.widgets.mem, '<span color="#EEEEEE">$1% </span>', 10)
 memicon = wibox.widget.imagebox()
-memicon:set_image("/home/acq/.config/awesome/themes/acq/ram.png")
+memicon:set_image(icons_dir .. "ram.png")
 
---{{---| CPU / sensors widget |-----------
+-- CPU
 cpuwidget = wibox.widget.textbox()
 vicious.register(cpuwidget, vicious.widgets.cpu,
 '<span color="#EEEEEE">$1% </span>', 2)
 
 cpuicon = wibox.widget.imagebox()
-cpuicon:set_image("/home/acq/.config/awesome/themes/acq/cpu.png")
+cpuicon:set_image(icons_dir .. "cpu.png")
 
+-- Separater
 separate = wibox.widget.imagebox()
-separate:set_image("/home/acq/.config/awesome/themes/acq/separate.png")
--- Create a wibox for each screen and add it
+separate:set_image(icons_dir .. "separate.png")
+
+
 mywibox = {}
 mypromptbox = {}
 mylayoutbox = {}
@@ -487,7 +423,7 @@ clientkeys = awful.util.table.join(
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
-for i = 1, 9 do
+for i = 1, 5 do
     globalkeys = awful.util.table.join(globalkeys,
         awful.key({ modkey }, "#" .. i + 9,
                   function ()
@@ -654,7 +590,7 @@ do
   {
 --        "mate-panel",
     "mate-power-manager",
-    "compton --backend glx -f -b --mark-wmwin-focused --refresh-rate 60 --vsync-aggressive --sw-opti --blur-background --glx-no-stencil --glx-use-copysubbuffermesa --glx-no-rebind-pixmap --glx-swap-method -1 --dbus -I 0.5 -O 0.2",
+--    "compton --backend glx -f -b --mark-wmwin-focused --refresh-rate 60 --vsync-aggressive --sw-opti --blur-background --glx-no-stencil --glx-use-copysubbuffermesa --glx-no-rebind-pixmap --glx-swap-method -1 --dbus -I 0.5 -O 0.2",
 	"fcitx",
 	"nm-applet",
 	"syndaemon -i 0.1",

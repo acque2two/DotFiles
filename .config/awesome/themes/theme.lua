@@ -10,7 +10,7 @@
 theme = {}
 theme.wallpaper = os.getenv("HOME").."/.config/awesome/background.png"
 
-filedir = os.getenv("HOME").."/.config/awesome/themes/acq/"
+filedir = os.getenv("HOME").."/.config/awesome/themes/icons/"
 -- }}}
 
 -- {{{ Styles
