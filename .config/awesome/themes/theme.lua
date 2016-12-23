@@ -8,7 +8,7 @@
 
 -- {{{ Main
 theme = {}
-theme.wallpaper = os.getenv("HOME").."/.config/awesome/archlinux-simplyblack.png"
+theme.wallpaper = os.getenv("HOME").."/.config/awesome/background.png"
 
 filedir = os.getenv("HOME").."/.config/awesome/themes/acq/"
 -- }}}

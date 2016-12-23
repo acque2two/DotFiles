@@ -11,7 +11,8 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local vicious = require("vicious")
-
+require('naughty')
+awful.util.spawn_with_shell('xmodmap ~/.xmodmap')
 xdg_menu = require("archmenu")
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -23,8 +24,9 @@ if awesome.startup_errors then
 end
 menubar.cache_entries = true
 menubar.show_categories = true
-menubar.geometry = {
-   height = 300,
+menubar.g = {
+   height = 12,
+   y = 10
 }
 
 -- Handle runtime errors after startup
@@ -110,18 +112,18 @@ end
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
-myawesomemenu = {
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", awesome.quit }
-}
+-- myawesomemenu = {
+--   { "manual", terminal .. " -e man awesome" },
+--   { "edit config", editor_cmd .. " " .. awesome.conffile },
+--   { "restart", awesome.restart },
+--   { "quit", awesome.quit }
+-- }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                     { "Applications", xdgmenu },
-                                    { "open terminal", terminal }
-                                  }
-                        })
+--mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+--                                     { "Applications", xdgmenu },
+--                                    { "open terminal", terminal }
+--                                  }
+--                       })
 
 -- mylauncher = awful.widget.launcher({ menu = mymainmenu })
 
@@ -151,10 +153,10 @@ vicious.register(baticon, vicious.widgets.bat, function(widget, args)
         baticon:set_image("/home/acq/.config/awesome/themes/acq/power_nobatt.png")
     end
 end,
-    1,"BAT0")
+    5,"BAT0")
 
 batwidget = wibox.widget.textbox()
-vicious.register(batwidget, vicious.widgets.bat, '<span color="#EEEEEE">$2% </span>', 0.2, "BAT0")
+vicious.register(batwidget, vicious.widgets.bat, '<span color="#EEEEEE">$2% </span>', 10, "BAT0")
 
 --{{ Net Widget }} --
 
@@ -163,30 +165,46 @@ neticon = wibox.widget.imagebox()
 
 vicious.register(netwidget, vicious.widgets.net, function(widgets,args)
         local interface = ""
-        if args["{enp0s25 carrier}"] == 1 then
-                interface = "enp0s25"
+        if args["{bnep0 carrier}"] == 1 then
+            interface = "bnep0"
+        elseif args["{enp0s25 carrier}"] == 1 then
+            interface = "enp0s25"
         elseif args["{wlp3s0 carrier}"] == 1 then
                 interface = "wlp3s0"
         elseif args["{br carrier}"] == 1 then
                 interface = "br"
         else
                 return ""
-            end
-        return '<span color="#EEEEEE">' ..args["{"..interface.." down_kb}"]..'k'..'</span>' end, 2)
-netwidget:buttons(awful.util.table.join(awful.button({ }, 1, function() awful.util.spawn_with_shell('wicd-client -n') end)))
+        end
+        return '<span color="#EEEEEE">' ..args["{"..interface.." down_kb}"]..'k'..'</span>' end, 2
+)
+
+vicious.register(neticon, vicious.widgets.net, function(widget, args)
+        if args["{bnep0 carrier}"] == 1 then
+            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_bt.png")
+        elseif args["{enp0s25 carrier}"] == 1 then
+            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_ethernet.png")
+        elseif args["{wlp3s0 carrier}"] == 1 then
+            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_wlan.png")
+        elseif args["{br carrier}"] == 1 then
+            neticon:set_image("/home/acq/.config/awesome/themes/acq/net_vpn.png")
+        end
+end)
+
+--netwidget:buttons(awful.util.table.join(awful.button({ }, 1, function() awful.util.spawn_with_shell('wicd-client -n') end)))
 
 
 ---{{---| Wifi Signal Widget |-------
-vicious.register(neticon, vicious.widgets.wifi, function(widget, args)
-    local sigstrength = tonumber(args["{link}"])
-    if sigstrength > 69 then
-        neticon:set_image(beautiful.nethigh)
-    elseif sigstrength > 40 and sigstrength < 70 then
-        neticon:set_image(beautiful.netmedium)
-    else
-        neticon:set_image(beautiful.netlow)
-    end
-end, 120, 'wlp3s0')
+-- vicious.register(neticon, vicious.widgets.wifi, function(widget, args)
+--    local sigstrength = tonumber(args["{link}"])
+--    if sigstrength > 69 then
+--        neticon:set_image(beautiful.nethigh)
+--    elseif sigstrength > 40 and sigstrength < 70 then
+--        neticon:set_image(beautiful.netmedium)
+--    else
+--        neticon:set_image(beautiful.netlow)
+--    end
+--end, 120, 'wlp3s0')
 
 -- {{ Volume Widget }} --
 
@@ -202,12 +220,12 @@ vicious.register(volicon, vicious.widgets.volume, function(widget, args)
         else
         end
 
-end, 1, "Master")
+end, 5, "Master")
 
 --{{--| MEM widget |-----------------
 memwidget = wibox.widget.textbox()
 
-vicious.register(memwidget, vicious.widgets.mem, '<span color="#EEEEEE">$1% </span>', 5)
+vicious.register(memwidget, vicious.widgets.mem, '<span color="#EEEEEE">$1% </span>', 10)
 memicon = wibox.widget.imagebox()
 memicon:set_image("/home/acq/.config/awesome/themes/acq/ram.png")
 
@@ -238,7 +256,7 @@ mytasklist = {}
 mytasklist.buttons = awful.util.table.join(
                      awful.button({ }, 1, function (c)
                                               if c == client.focus then
-                                                  c.minimized = true
+                                                  -- c.minimized = true
                                               else
                                                   -- Without this, the following
                                                   -- :isvisible() makes no sense
@@ -292,6 +310,7 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
     -- left_layout:add(mylauncher)
+    left_layout:add(mylayoutbox[s])
     left_layout:add(mypromptbox[s])
 
     -- Widgets that are aligned to the right
@@ -314,11 +333,12 @@ for s = 1, screen.count() do
     right_layout:add(separate)
     right_layout:add(batwidget)
     right_layout:add(separate)
+    right_layout:add(neticon)
+    right_layout:add(separate)
     right_layout:add(netwidget)
     right_layout:add(separate)
     right_layout:add(tdwidget)
     right_layout:add(mytaglist[s])
-    right_layout:add(mylayoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
@@ -360,9 +380,9 @@ awful.key({ "Control", "Shift"}, "b", function() awful.util.spawn("/opt/sublime-
 
 -- {{ Volume Control }} --
 
-awful.key({     }, "XF86AudioRaiseVolume", function() awful.util.spawn("amixer set Master 5%+", false) end),
-awful.key({     }, "XF86AudioLowerVolume", function() awful.util.spawn("amixer set Master 5%-", false) end),
-awful.key({     }, "XF86AudioMute", function() awful.util.spawn("amixer set Master toggle", false) end),
+--awful.key({     }, "XF86AudioRaiseVolume", function() awful.util.spawn("amixer set Master 5%+", false) end),
+--awful.key({     }, "XF86AudioLowerVolume", function() awful.util.spawn("amixer set Master 5%-", false) end),
+--awful.key({     }, "XF86AudioMute", function() awful.util.spawn("amixer set Master toggle", false) end),
 awful.key({     }, "XF86AudioMicMute", function() awful.util.spawn("amixer set Capture toggle", false) end),
 awful.key({     }, "XF86Launch1", function() awful.util.spawn("google-chrome-unstable", false) end),
 awful.key({     }, "XF86Battery", function() awful.util.spawn("gksu tlp bat", false) end),
@@ -629,19 +649,20 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- os.execute"dex -a -e Awesome"
 	-- "mate-power-manager",
-    -- "compton --backend glx -f -b --mark-wmwin-focused --refresh-rate 60 --vsync opengl-swc --vsync-aggressive --sw-opti --blur-background --glx-no-stencil --glx-use-copysubbuffermesa --glx-no-rebind-pixmap --glx-swap-method -1 --dbus -I 0.1 -O 0.2",
 do
   local cmds =
   {
 --        "mate-panel",
+    "mate-power-manager",
+    "compton --backend glx -f -b --mark-wmwin-focused --refresh-rate 60 --vsync-aggressive --sw-opti --blur-background --glx-no-stencil --glx-use-copysubbuffermesa --glx-no-rebind-pixmap --glx-swap-method -1 --dbus -I 0.5 -O 0.2",
 	"fcitx",
 	"nm-applet",
 	"syndaemon -i 0.1",
 	"blueman-applet",
-	"xmodmap -e 'keysym Muhenkan = Super_L'",
-    "xscreensaver",
-    "cbatticon -i standard -l 10 -r 3 -c 'systemctl suspend -i' -x '/home/acq/.bin/batnotify'",
-    "tilda",
+--	"xmodmap -e 'keysym Muhenkan = Super_L'",
+--    "xscreensaver",
+--    "cbatticon -i standard -l 10 -r 3 -c 'systemctl suspend -i' -x '/home/acq/.bin/batnotify'",
+--    "tilda",
 	--and so on...
   }
   for _,i in pairs(cmds) do
@@ -651,6 +672,5 @@ end
 awful.util.spawn("export GTK_IM_MODULE=fcitx")
 awful.util.spawn("export QT_IM_MODULE=fcitx")
 awful.util.spawn('export XMODIFIERS="@im=fcitx"')
-awful.util.spawn_with_shell('sleep 2; xmodmap ~/.xmodmap')
 
 awful.util.spawn('~/.bin/ramwarn')
