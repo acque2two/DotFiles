@@ -96,7 +96,7 @@ vicious.register(tdwidget, vicious.widgets.date, '<span color="#F0F0F0"> %R </sp
 baticon = wibox.widget.imagebox()
 vicious.register(baticon, vicious.widgets.bat, function(widget, args)
     if args[1] == "+" then
-        baticon:set_image("power_charge.png")
+        baticon:set_image(icons_dir .. "power_charge.png")
     elseif args[1] == "−" then
         baticon:set_image(icons_dir .. "power_discharge.png")
     else
