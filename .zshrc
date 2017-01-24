@@ -19,26 +19,16 @@ if [ -z "$TMUX" ]; then
 fi
 
 if [ -z "$SCRIPTED" ]; then
-    LOGGING="/home/acq/.termlog/`date +%y%m%d/ZSH_%H%M%S_%N.log`'"
+    LOGGING="/home/acq/.termlog/`date +%y%m%d`/ZSH_`date +%H%M%S`_`date +%N`.log"
     echo Not scripted. script starting...
-    mkdir -p ~/.termlog/`date +%y%m%d`
     mkdir -p ~/.termlog/`date +%y%m%d`
     export SCRIPTED=TRUE
     script $LOGGING --timing=$LOGGING.timing
     exit
-    #echo \[WARNING\] SCRIPT DISABLED\!
 fi
-
-#function lconf() {
-#    CONFF=${1:?"[ERROR] Augument error."}
-#    if [ -f $CONFF ];then
-#            else
-#        echo "[ERROR] ${CONFF} is not found."
-#    fi
-#}
-#CONF="${HOME}/.zsh"
 
 for i in `ls ${HOME}/.zsh/*.zshrc`
 do
     . $i
 done
+export GOPATH=~/.go
